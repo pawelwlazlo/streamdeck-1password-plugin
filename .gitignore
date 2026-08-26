@@ -52,3 +52,6 @@ coverage/
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
+
+# Stream Deck plugin bundle
+io.nerd4rent.streamdeck-1password-plugin.sdPlugin/bin/node_modules/

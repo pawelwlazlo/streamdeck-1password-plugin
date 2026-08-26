@@ -1,4 +1,7 @@
+import { createClient } from "@1password/sdk";
 import { action, SingletonAction } from "@elgato/streamdeck";
 
 @action({ UUID: "io.nerd4rent.streamdeck-1password-plugin.item" })
-export class OnePasswordItem extends SingletonAction {}
+export class OnePasswordItem extends SingletonAction {
+	readonly sdk = createClient;
+}

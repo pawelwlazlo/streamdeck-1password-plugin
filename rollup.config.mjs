@@ -2,6 +2,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import terser from "@rollup/plugin-terser";
 import typescript from "@rollup/plugin-typescript";
+import fs from "node:fs";
 import path from "node:path";
 import url from "node:url";
 
@@ -13,6 +14,7 @@ const sdPlugin = "io.nerd4rent.streamdeck-1password-plugin.sdPlugin";
  */
 const config = {
 	input: "src/plugin.ts",
+	external: ["@1password/sdk"],
 	output: {
 		file: `${sdPlugin}/bin/plugin.js`,
 		sourcemap: isWatching,
@@ -37,6 +39,14 @@ const config = {
 		}),
 		commonjs(),
 		!isWatching && terser(),
+		{
+			name: "copy-onepassword-sdk",
+			writeBundle() {
+				for (const pkg of ["sdk", "sdk-core"]) {
+					fs.cpSync(`node_modules/@1password/${pkg}`, `${sdPlugin}/bin/node_modules/@1password/${pkg}`, { recursive: true });
+				}
+			}
+		},
 		{
 			name: "emit-module-package-file",
 			generateBundle() {
