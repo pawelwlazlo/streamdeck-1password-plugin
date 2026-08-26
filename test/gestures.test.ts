@@ -55,6 +55,17 @@ describe("GestureDetector", () => {
 		assert.deepEqual(calls(), [0, 0, 1]);
 	});
 
+	it("emits only long when a click is followed by a hold within the window", () => {
+		detector.down();
+		detector.up();
+		mock.timers.tick(100);
+		detector.down();
+		mock.timers.tick(1000);
+		detector.up();
+		mock.timers.tick(1000);
+		assert.deepEqual(calls(), [0, 0, 1]);
+	});
+
 	it("treats presses separated by more than the window as two singles", () => {
 		detector.down();
 		detector.up();

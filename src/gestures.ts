@@ -13,6 +13,7 @@ export class GestureDetector {
 	private longPressTimer: NodeJS.Timeout | undefined;
 	private singleClickTimer: NodeJS.Timeout | undefined;
 	private longPressFired = false;
+	private secondPress = false;
 	private readonly handlers: GestureHandlers;
 	private readonly timings: GestureTimings;
 
@@ -23,6 +24,8 @@ export class GestureDetector {
 
 	down(): void {
 		this.longPressFired = false;
+		this.secondPress = this.singleClickTimer !== undefined;
+		this.clearSingleClick();
 		this.longPressTimer = setTimeout(() => {
 			this.longPressFired = true;
 			this.clearSingleClick();
@@ -35,8 +38,8 @@ export class GestureDetector {
 		if (this.longPressFired) {
 			return;
 		}
-		if (this.singleClickTimer) {
-			this.clearSingleClick();
+		if (this.secondPress) {
+			this.secondPress = false;
 			this.handlers.onDouble();
 			return;
 		}
