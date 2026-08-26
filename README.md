@@ -9,7 +9,7 @@ Configure a key with a vault and an item from the property inspector, then:
 | Gesture | Effect |
 | --- | --- |
 | Press | Copy the item's username to the clipboard |
-| Double press (within 300 ms) | Copy the item's password to the clipboard |
+| Double press (within 300 ms) | Copy the item's password to the clipboard (cleared after 30 s if still there) |
 | Hold (≥ 500 ms) | Depending on the **Hold action** setting: open the item's website in the default browser and copy the password, or copy the current one-time password |
 
 A green check confirms success; a warning triangle means the gesture failed (no token, no item selected, missing field, SDK error) — see the plugin logs for details.
@@ -18,7 +18,7 @@ A green check confirms success; a warning triangle means the gesture failed (no 
 
 - macOS 12+ with Stream Deck software 7.1+ (Windows is untested; the clipboard integration uses `pbcopy`)
 - Node.js 20+ for building
-- A 1Password **service account** with read access to the vaults you want to use. Service accounts cannot access personal (Private) vaults. Create one at *Developer → Service accounts* in your 1Password account and paste the token into the property inspector — it is stored in the plugin's global settings, never in the key's settings.
+- A 1Password **service account** with read access to the vaults you want to use. Service accounts cannot access personal (Private) vaults. Create one at *Developer → Service accounts* in your 1Password account and paste the token into the property inspector — it is stored in the plugin's global settings (a plaintext JSON file under the Stream Deck data directory, protected only by macOS file permissions), never in the key's settings. Use a service account scoped to the minimum vaults you need.
 
 ## Development
 
