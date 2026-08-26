@@ -10,7 +10,7 @@ import streamDeck, {
 
 import { GestureDetector } from "../gestures";
 import { getLoginFields, listItems, listVaults, type LoginFields } from "../onepassword/client";
-import { copyToClipboard } from "../system/clipboard";
+import { copySecretToClipboard, copyToClipboard } from "../system/clipboard";
 
 type ItemSettings = {
 	vaultId?: string;
@@ -41,7 +41,11 @@ export class OnePasswordItem extends SingletonAction<ItemSettings> {
 	override async onSendToPlugin(ev: SendToPluginEvent<DataSourceRequest, ItemSettings>): Promise<void> {
 		const request = ev.payload;
 		try {
-			const items = await this.loadOptions(request.event, await ev.action.getSettings());
+			const settings = await ev.action.getSettings();
+			const items = await this.loadOptions(request.event, settings);
+			if (request.event === "getItems" && settings.itemId && !items.some((item) => item.value === settings.itemId)) {
+				await ev.action.setSettings({ ...settings, itemId: undefined });
+			}
 			await streamDeck.ui.sendToPropertyInspector({ event: request.event, items });
 		} catch (error) {
 			streamDeck.logger.error(`Failed to load ${request.event}`, error);
@@ -61,18 +65,18 @@ export class OnePasswordItem extends SingletonAction<ItemSettings> {
 		if (!detector) {
 			detector = new GestureDetector({
 				onSingle: () => this.run(key, "copy username", (f) => copyRequired(f.username, "username")),
-				onDouble: () => this.run(key, "copy password", (f) => copyRequired(f.password, "password")),
+				onDouble: () => this.run(key, "copy password", (f) => copySecretRequired(f.password, "password")),
 				onLong: () => this.run(key, "long press", async (f) => {
 					const { longPressMode = "open" } = await key.getSettings();
 					if (longPressMode === "otp") {
-						return copyRequired(f.otp, "one-time password");
+						return copySecretRequired(f.otp, "one-time password");
 					}
 					if (!f.url) {
 						throw new Error("Item has no website URL");
 					}
 					await streamDeck.system.openUrl(f.url);
 					if (f.password) {
-						await copyToClipboard(f.password);
+						await copySecretToClipboard(f.password);
 					}
 				}),
 			});
@@ -101,4 +105,11 @@ async function copyRequired(value: string | undefined, name: string): Promise<vo
 		throw new Error(`Item has no ${name}`);
 	}
 	await copyToClipboard(value);
+}
+
+async function copySecretRequired(value: string | undefined, name: string): Promise<void> {
+	if (!value) {
+		throw new Error(`Item has no ${name}`);
+	}
+	await copySecretToClipboard(value);
 }
