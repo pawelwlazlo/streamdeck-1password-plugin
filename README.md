@@ -12,13 +12,21 @@ Configure a key with a vault and an item from the property inspector, then:
 | Double press (within 300 ms) | Copy the item's password to the clipboard (cleared after 30 s if still there) |
 | Hold (≥ 500 ms) | Depending on the **Hold action** setting: open the item's website in the default browser and copy the password, or copy the current one-time password |
 
-A green check confirms success; a warning triangle means the gesture failed (no token, no item selected, missing field, SDK error) — see the plugin logs for details.
+A green check confirms success; a warning triangle means the gesture failed (no account configured, authorization declined, no item selected, missing field, SDK error) — see the plugin logs for details.
 
 ## Prerequisites
 
 - macOS 12+ with Stream Deck software 7.1+ (Windows is untested; the clipboard integration uses `pbcopy`)
 - Node.js 20+ for building
-- A 1Password **service account** with read access to the vaults you want to use. Service accounts cannot access personal (Private) vaults. Create one at *Developer → Service accounts* in your 1Password account and paste the token into the property inspector — it is stored in the plugin's global settings (a plaintext JSON file under the Stream Deck data directory, protected only by macOS file permissions), never in the key's settings. Use a service account scoped to the minimum vaults you need.
+- The **latest 1Password desktop app** (1Password 8), signed in to your account. The plugin authenticates through the app with the 1Password SDK, so there are no tokens to create or paste, and every vault you can see in the app is available — including your Private vault.
+
+## 1Password setup
+
+1. In the 1Password app, select your account at the top of the sidebar, then open **Settings → Developer** and turn on **Integrate with other apps**.
+2. Optionally turn on Touch ID (macOS) or Windows Hello under **Settings → Security** so authorization prompts can be approved biometrically.
+3. In the property inspector, enter your **1Password account**: the email address you sign in with, or the account name exactly as shown at the top of the app's sidebar. It is stored in the plugin's global settings and shared by all keys.
+
+The first request from the plugin opens an authorization prompt in the 1Password app; approve it to let the plugin read your vaults. The session expires after 10 minutes of inactivity or when you lock 1Password, in which case the next key press prompts again.
 
 ## Development
 

@@ -1,8 +1,8 @@
-import { createClient, type Client } from "@1password/sdk";
+import { createClient, DesktopAuth, type Client } from "@1password/sdk";
 import streamDeck from "@elgato/streamdeck";
 
 type GlobalSettings = {
-	serviceAccountToken?: string;
+	accountName?: string;
 };
 
 export type LoginFields = {
@@ -14,26 +14,26 @@ export type LoginFields = {
 
 export type Option = { label: string; value: string };
 
-let cached: { token: string; client: Promise<Client> } | undefined;
+let cached: { accountName: string; client: Promise<Client> } | undefined;
 
 streamDeck.settings.onDidReceiveGlobalSettings<GlobalSettings>((ev) => {
-	if (cached && cached.token !== ev.settings.serviceAccountToken) {
+	if (cached && cached.accountName !== ev.settings.accountName) {
 		cached = undefined;
 	}
 });
 
 async function getClient(): Promise<Client> {
-	const { serviceAccountToken } = await streamDeck.settings.getGlobalSettings<GlobalSettings>();
-	if (!serviceAccountToken) {
-		throw new Error("1Password service account token is not configured");
+	const { accountName } = await streamDeck.settings.getGlobalSettings<GlobalSettings>();
+	if (!accountName) {
+		throw new Error("1Password account name is not configured");
 	}
-	if (cached?.token !== serviceAccountToken) {
+	if (cached?.accountName !== accountName) {
 		const client = createClient({
-			auth: serviceAccountToken,
+			auth: new DesktopAuth(accountName),
 			integrationName: "Stream Deck 1Password plugin",
 			integrationVersion: "v0.1.0",
 		});
-		cached = { token: serviceAccountToken, client };
+		cached = { accountName, client };
 		client.catch(() => {
 			cached = undefined;
 		});
