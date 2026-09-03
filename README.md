@@ -24,7 +24,7 @@ A green check confirms success; a warning triangle means the gesture failed (no 
 
 1. In the 1Password app, select your account at the top of the sidebar, then open **Settings → Developer** and turn on **Integrate with other apps**.
 2. Optionally turn on Touch ID (macOS) or Windows Hello under **Settings → Security** so authorization prompts can be approved biometrically.
-3. In the property inspector, enter your **1Password account** name exactly as shown at the top of the app's sidebar (the account UUID also works). The name is stored in the plugin's global settings and shared by all keys.
+3. In the property inspector, enter your **1Password account**: the email address you sign in with, or the account name exactly as shown at the top of the app's sidebar. It is stored in the plugin's global settings and shared by all keys.
 
 The first request from the plugin opens an authorization prompt in the 1Password app; approve it to let the plugin read your vaults. The session expires after 10 minutes of inactivity or when you lock 1Password, in which case the next key press prompts again.
 
