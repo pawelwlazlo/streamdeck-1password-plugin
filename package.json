@@ -1,7 +1,8 @@
 {
     "scripts": {
         "build": "rollup -c",
-        "watch": "rollup -c -w --watch.onEnd=\"streamdeck restart io.nerd4rent.streamdeck-1password-plugin\""
+        "watch": "rollup -c -w --watch.onEnd=\"streamdeck restart io.nerd4rent.streamdeck-1password-plugin\"",
+        "test": "node --test --experimental-strip-types 'test/**/*.test.ts'"
     },
     "type": "module",
     "devDependencies": {
@@ -17,6 +18,7 @@
         "typescript": "^5.2.2"
     },
     "dependencies": {
+        "@1password/sdk": "^0.5.0",
         "@elgato/streamdeck": "^2.0.0"
     }
 }

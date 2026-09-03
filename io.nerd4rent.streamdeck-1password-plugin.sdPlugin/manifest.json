@@ -4,17 +4,17 @@
 	"Author": "Paweł Wlazło",
 	"Actions": [
 		{
-			"Name": "Counter",
-			"UUID": "io.nerd4rent.streamdeck-1password-plugin.increment",
-			"Icon": "imgs/actions/counter/icon",
-			"Tooltip": "Displays a count, which increments by one on press.",
-			"PropertyInspectorPath": "ui/increment-counter.html",
+			"Name": "1Password item",
+			"UUID": "io.nerd4rent.streamdeck-1password-plugin.item",
+			"Icon": "imgs/actions/item/icon",
+			"Tooltip": "Press: copy username. Double press: copy password. Hold: open website or copy OTP.",
+			"PropertyInspectorPath": "ui/onepassword-item.html",
 			"Controllers": [
 				"Keypad"
 			],
 			"States": [
 				{
-					"Image": "imgs/actions/counter/key",
+					"Image": "imgs/actions/item/key",
 					"TitleAlignment": "middle"
 				}
 			]
