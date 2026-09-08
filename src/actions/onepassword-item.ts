@@ -49,7 +49,7 @@ export class OnePasswordItem extends SingletonAction<ItemSettings> {
 			await streamDeck.ui.sendToPropertyInspector({ event: request.event, items });
 		} catch (error) {
 			streamDeck.logger.error(`Failed to load ${request.event}`, error);
-			await streamDeck.ui.sendToPropertyInspector({ event: request.event, items: [] });
+			await streamDeck.ui.sendToPropertyInspector({ event: request.event, items: [], error: errorMessage(error) });
 		}
 	}
 
@@ -98,6 +98,10 @@ export class OnePasswordItem extends SingletonAction<ItemSettings> {
 			await key.showAlert();
 		}
 	}
+}
+
+function errorMessage(error: unknown): string {
+	return error instanceof Error ? error.message : String(error);
 }
 
 async function copyRequired(value: string | undefined, name: string): Promise<void> {
