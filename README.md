@@ -24,9 +24,12 @@ A green check confirms success; a warning triangle means the gesture failed (no 
 
 1. In the 1Password app, select your account at the top of the sidebar, then open **Settings → Developer** and turn on **Integrate with other apps**.
 2. Optionally turn on Touch ID (macOS) or Windows Hello under **Settings → Security** so authorization prompts can be approved biometrically.
-3. In the property inspector, enter your **1Password account**: the email address you sign in with, or the account name exactly as shown at the top of the app's sidebar. It is stored in the plugin's global settings and shared by all keys.
+3. Add a **1Password item** key to your deck. Until an account is configured, its property inspector shows only the **1Password account** field with a one-line reminder of step 1. Enter the email address you sign in with (or the account name exactly as shown at the top of the app's sidebar).
+4. Approve the authorization prompt that opens in the 1Password app. The **Vault**, **Item** and **Hold action** settings appear and the vault list loads; pick a vault and an item.
 
-The first request from the plugin opens an authorization prompt in the 1Password app; approve it to let the plugin read your vaults. The session expires after 10 minutes of inactivity or when you lock 1Password, in which case the next key press prompts again.
+The account is stored once in the plugin's global settings and shared by every 1Password key, so further keys open straight on the vault and item settings. The account stays reachable in the collapsed **1Password account** section at the top of each key's property inspector; changing it there switches all keys to the new account. If 1Password rejects the account (for example a typo in the email), the error is shown under the field.
+
+The session expires after 10 minutes of inactivity or when you lock 1Password, in which case the next key press prompts again.
 
 ## Development
 
