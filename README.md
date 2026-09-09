@@ -16,7 +16,7 @@ A green check confirms success; a warning triangle means the gesture failed (no 
 
 ## Prerequisites
 
-- macOS 12+ with Stream Deck software 7.1+ (Windows is untested; the clipboard integration uses `pbcopy`)
+- macOS 12+ or Windows 10+ with Stream Deck software 7.1+ (clipboard goes through `pbcopy`/`pbpaste` on macOS and Windows PowerShell `Set-Clipboard`/`Get-Clipboard` on Windows)
 - Node.js 20+ for building
 - The **latest 1Password desktop app** (1Password 8), signed in to your account. The plugin authenticates through the app with the 1Password SDK, so there are no tokens to create or paste, and every vault you can see in the app is available — including your Private vault.
 
