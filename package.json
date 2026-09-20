@@ -2,7 +2,7 @@
     "scripts": {
         "build": "rollup -c",
         "watch": "rollup -c -w --watch.onEnd=\"streamdeck restart io.nerd4rent.streamdeck-1password-plugin\"",
-        "test": "node --test --experimental-strip-types 'test/**/*.test.ts'"
+        "test": "node --test --experimental-strip-types \"test/**/*.test.ts\""
     },
     "type": "module",
     "devDependencies": {

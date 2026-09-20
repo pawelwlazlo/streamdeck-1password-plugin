@@ -16,13 +16,13 @@ A green check confirms success; a warning triangle means the gesture failed (no 
 
 ## Prerequisites
 
-- macOS 12+ with Stream Deck software 7.1+ (Windows is untested; the clipboard integration uses `pbcopy`)
+- macOS 12+ or Windows 10+ with Stream Deck software 7.1+ (clipboard goes through `pbcopy`/`pbpaste` on macOS and Windows PowerShell `Set-Clipboard`/`Get-Clipboard` on Windows)
 - Node.js 20+ for building
 - The **latest 1Password desktop app** (1Password 8), signed in to your account. The plugin authenticates through the app with the 1Password SDK, so there are no tokens to create or paste, and every vault you can see in the app is available — including your Private vault.
 
 ## 1Password setup
 
-1. In the 1Password app, select your account at the top of the sidebar, then open **Settings → Developer** and turn on **Integrate with other apps**.
+1. In the 1Password app, select your account at the top of the sidebar, then open **Settings → Developer** and turn on **Integrate with other apps** (on Windows the checkbox is labelled **Integrate with 1Password SDKs**). Without it the plugin reports `Native library is not available.`, because 1Password only publishes the integration library and its IPC channel once the setting is on.
 2. Optionally turn on Touch ID (macOS) or Windows Hello under **Settings → Security** so authorization prompts can be approved biometrically.
 3. Add a **1Password item** key to your deck. Until an account is configured, its property inspector shows only the **1Password account** field with a one-line reminder of step 1. Enter the email address you sign in with (or the account name exactly as shown at the top of the app's sidebar).
 4. Approve the authorization prompt that opens in the 1Password app. The **Vault**, **Item** and **Hold action** settings appear and the vault list loads; pick a vault and an item.
