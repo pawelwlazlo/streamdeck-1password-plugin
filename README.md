@@ -22,7 +22,7 @@ A green check confirms success; a warning triangle means the gesture failed (no 
 
 ## 1Password setup
 
-1. In the 1Password app, select your account at the top of the sidebar, then open **Settings → Developer** and turn on **Integrate with other apps**.
+1. In the 1Password app, select your account at the top of the sidebar, then open **Settings → Developer** and turn on **Integrate with other apps** (on Windows the checkbox is labelled **Integrate with 1Password SDKs**). Without it the plugin reports `Native library is not available.`, because 1Password only publishes the integration library and its IPC channel once the setting is on.
 2. Optionally turn on Touch ID (macOS) or Windows Hello under **Settings → Security** so authorization prompts can be approved biometrically.
 3. Add a **1Password item** key to your deck. Until an account is configured, its property inspector shows only the **1Password account** field with a one-line reminder of step 1. Enter the email address you sign in with (or the account name exactly as shown at the top of the app's sidebar).
 4. Approve the authorization prompt that opens in the 1Password app. The **Vault**, **Item** and **Hold action** settings appear and the vault list loads; pick a vault and an item.
