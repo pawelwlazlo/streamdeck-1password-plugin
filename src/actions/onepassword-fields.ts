@@ -8,6 +8,7 @@ import streamDeck, {
 	type WillDisappearEvent,
 } from "@elgato/streamdeck";
 
+import { errorMessage } from "../error-message";
 import { fieldOptions, resolveGestureTarget } from "../gesture-targets";
 import { GestureDetector } from "../gestures";
 import { getItemInfo, listItems, listVaults, type Option } from "../onepassword/client";
@@ -120,8 +121,4 @@ export class OnePasswordFields extends SingletonAction<FieldsSettings> {
 			await key.showAlert();
 		}
 	}
-}
-
-function errorMessage(error: unknown): string {
-	return error instanceof Error ? error.message : String(error);
 }

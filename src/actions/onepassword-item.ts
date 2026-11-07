@@ -8,6 +8,7 @@ import streamDeck, {
 	type WillDisappearEvent,
 } from "@elgato/streamdeck";
 
+import { errorMessage } from "../error-message";
 import { GestureDetector } from "../gestures";
 import { getLoginFields, listItems, listVaults, type LoginFields } from "../onepassword/client";
 import { copySecretToClipboard, copyToClipboard } from "../system/clipboard";
@@ -98,10 +99,6 @@ export class OnePasswordItem extends SingletonAction<ItemSettings> {
 			await key.showAlert();
 		}
 	}
-}
-
-function errorMessage(error: unknown): string {
-	return error instanceof Error ? error.message : String(error);
 }
 
 async function copyRequired(value: string | undefined, name: string): Promise<void> {
