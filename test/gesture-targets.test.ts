@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { fieldOptions, isSecretField, resolveGestureTarget, type ItemInfo } from "../src/gesture-targets.ts";
+import { fieldOptions, isSecretField, resolveGestureTarget, sshKeyFields, type ItemInfo } from "../src/gesture-targets.ts";
 
 const item: ItemInfo = {
 	fields: [
@@ -93,5 +93,32 @@ describe("resolveGestureTarget", () => {
 
 	it("fails for an unknown target", () => {
 		assert.throws(() => resolveGestureTarget("bogus", item));
+	});
+});
+
+describe("sshKeyFields", () => {
+	it("exposes public key, fingerprint and key type as plain fields of the private key", () => {
+		const fields = sshKeyFields(
+			{ id: "private_key", sectionTitle: "Keys" },
+			{ publicKey: "ssh-ed25519 AAAA", fingerprint: "SHA256:abc", keyType: "Ed25519" },
+		);
+
+		assert.deepEqual(fields, [
+			{ id: "private_key.publicKey", title: "public key", sectionTitle: "Keys", fieldType: "Text", value: "ssh-ed25519 AAAA" },
+			{ id: "private_key.fingerprint", title: "fingerprint", sectionTitle: "Keys", fieldType: "Text", value: "SHA256:abc" },
+			{ id: "private_key.keyType", title: "key type", sectionTitle: "Keys", fieldType: "Text", value: "Ed25519" },
+		]);
+	});
+
+	it("lets a gesture copy the public key without clearing the clipboard", () => {
+		const sshItem: ItemInfo = {
+			fields: [
+				...sshKeyFields({ id: "private_key" }, { publicKey: "ssh-ed25519 AAAA", fingerprint: "SHA256:abc", keyType: "Ed25519" }),
+				{ id: "private_key", title: "private key", fieldType: "SshKey", value: "-----BEGIN" },
+			],
+			websites: [],
+		};
+
+		assert.deepEqual(resolveGestureTarget("field:private_key.publicKey", sshItem), { kind: "copy", value: "ssh-ed25519 AAAA", secret: false });
 	});
 });
