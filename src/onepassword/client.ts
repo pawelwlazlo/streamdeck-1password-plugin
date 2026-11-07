@@ -1,6 +1,8 @@
 import { createClient, DesktopAuth, type Client } from "@1password/sdk";
 import streamDeck from "@elgato/streamdeck";
 
+import type { ItemInfo } from "../gesture-targets";
+
 type GlobalSettings = {
 	accountName?: string;
 };
@@ -62,5 +64,21 @@ export async function getLoginFields(vaultId: string, itemId: string): Promise<L
 		password: item.fields.find((f) => f.id === "password")?.value,
 		otp: otpField?.details?.type === "Otp" ? otpField.details.content.code : undefined,
 		url: item.websites[0]?.url,
+	};
+}
+
+export async function getItemInfo(vaultId: string, itemId: string): Promise<ItemInfo> {
+	const client = await getClient();
+	const item = await client.items.get(vaultId, itemId);
+	const sectionTitles = new Map(item.sections.map((s) => [s.id, s.title]));
+	return {
+		fields: item.fields.map((f) => ({
+			id: f.id,
+			title: f.title,
+			sectionTitle: f.sectionId ? sectionTitles.get(f.sectionId) || undefined : undefined,
+			fieldType: f.fieldType,
+			value: f.details?.type === "Otp" ? f.details.content.code ?? "" : f.value,
+		})),
+		websites: item.websites.map((w) => w.url),
 	};
 }
