@@ -50,9 +50,11 @@ export class OnePasswordFields extends SingletonAction<FieldsSettings> {
 		try {
 			const settings = await ev.action.getSettings();
 			const items = await this.loadOptions(request.event, settings);
-			const stale = this.staleSettings(request.event, settings, items);
+			const current = await ev.action.getSettings();
+			const sameItem = current.vaultId === settings.vaultId && current.itemId === settings.itemId;
+			const stale = sameItem ? this.staleSettings(request.event, current, items) : undefined;
 			if (stale) {
-				await ev.action.setSettings({ ...settings, ...stale });
+				await ev.action.setSettings({ ...current, ...stale });
 			}
 			await streamDeck.ui.sendToPropertyInspector({ event: request.event, items });
 		} catch (error) {
