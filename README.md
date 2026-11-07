@@ -18,7 +18,7 @@ A green check confirms success; a warning triangle means the gesture failed (no 
 
 ## Action: 1Password
 
-Configure a key with a vault and an item, then pick a target for each of the three gestures — **Click**, **Double press** (within 300 ms) and **Hold** (≥ 500 ms):
+Configure a key with a vault and an item, then pick a target for each of the three gestures — **Click**, **Double click** (within 300 ms) and **Hold** (≥ 500 ms):
 
 | Target | Effect |
 | --- | --- |

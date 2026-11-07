@@ -23,7 +23,7 @@
 			"Name": "1Password",
 			"UUID": "io.nerd4rent.streamdeck-1password-plugin.fields",
 			"Icon": "imgs/actions/fields/icon",
-			"Tooltip": "1Password: choose what click, double press and hold do with any field of an item.",
+			"Tooltip": "1Password: choose what click, double click and hold do with any field of an item.",
 			"PropertyInspectorPath": "ui/onepassword-fields.html",
 			"Controllers": [
 				"Keypad"
