@@ -16,6 +16,14 @@ export type GestureTarget =
 	| { kind: "open"; url: string }
 	| { kind: "copy"; value: string; secret: boolean };
 
+export type GestureOutput = "copy" | "paste" | "type";
+
+const GESTURE_OUTPUTS: readonly string[] = ["copy", "paste", "type"] satisfies GestureOutput[];
+
+export function resolveGestureOutput(setting: string | undefined): GestureOutput {
+	return setting && GESTURE_OUTPUTS.includes(setting) ? (setting as GestureOutput) : "copy";
+}
+
 export const NO_ACTION = "";
 export const OPEN_WEBSITE = "open-website";
 const FIELD_PREFIX = "field:";
