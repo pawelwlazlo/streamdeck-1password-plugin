@@ -9,10 +9,11 @@ import streamDeck, {
 } from "@elgato/streamdeck";
 
 import { errorMessage } from "../error-message";
-import { fieldOptions, resolveGestureTarget } from "../gesture-targets";
+import { fieldOptions, resolveGestureOutput, resolveGestureTarget, type GestureOutput } from "../gesture-targets";
 import { GestureDetector } from "../gestures";
 import { getItemInfo, listItems, listVaults, type Option } from "../onepassword/client";
-import { copySecretToClipboard, copyToClipboard } from "../system/clipboard";
+import { copySecretToClipboard, copyToClipboard, runCommand } from "../system/clipboard";
+import { createKeyboard } from "../system/keyboard";
 
 type FieldsSettings = {
 	vaultId?: string;
@@ -20,11 +21,32 @@ type FieldsSettings = {
 	pressTarget?: string;
 	doublePressTarget?: string;
 	holdTarget?: string;
+	pressOutput?: string;
+	doublePressOutput?: string;
+	holdOutput?: string;
 };
 
 type TargetKey = "pressTarget" | "doublePressTarget" | "holdTarget";
 
 const TARGET_KEYS: TargetKey[] = ["pressTarget", "doublePressTarget", "holdTarget"];
+
+const OUTPUT_KEYS = {
+	pressTarget: "pressOutput",
+	doublePressTarget: "doublePressOutput",
+	holdTarget: "holdOutput",
+} as const satisfies Record<TargetKey, keyof FieldsSettings>;
+
+const keyboard = createKeyboard(process.platform, runCommand);
+
+async function deliver(value: string, secret: boolean, output: GestureOutput): Promise<void> {
+	if (output === "type") {
+		return keyboard.type(value);
+	}
+	await (secret ? copySecretToClipboard(value) : copyToClipboard(value));
+	if (output === "paste") {
+		await keyboard.paste();
+	}
+}
 
 type DataSourceRequest = {
 	event: "getVaults" | "getItems" | "getFields";
@@ -113,7 +135,7 @@ export class OnePasswordFields extends SingletonAction<FieldsSettings> {
 			if (resolved.kind === "open") {
 				await streamDeck.system.openUrl(resolved.url);
 			} else if (resolved.kind === "copy") {
-				await (resolved.secret ? copySecretToClipboard(resolved.value) : copyToClipboard(resolved.value));
+				await deliver(resolved.value, resolved.secret, resolveGestureOutput(settings[OUTPUT_KEYS[targetKey]]));
 			}
 			await key.showOk();
 		} catch (error) {
