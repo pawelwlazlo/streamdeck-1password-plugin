@@ -4,10 +4,10 @@
 	"Author": "Paweł Wlazło",
 	"Actions": [
 		{
-			"Name": "1Password item",
+			"Name": "Login",
 			"UUID": "io.nerd4rent.streamdeck-1password-plugin.item",
 			"Icon": "imgs/actions/item/icon",
-			"Tooltip": "Press: copy username. Double press: copy password. Hold: open website or copy OTP.",
+			"Tooltip": "Login: press copies username, double press copies password, hold opens website or copies OTP.",
 			"PropertyInspectorPath": "ui/onepassword-item.html",
 			"Controllers": [
 				"Keypad"
@@ -15,6 +15,22 @@
 			"States": [
 				{
 					"Image": "imgs/actions/item/key",
+					"TitleAlignment": "middle"
+				}
+			]
+		},
+		{
+			"Name": "1Password",
+			"UUID": "io.nerd4rent.streamdeck-1password-plugin.fields",
+			"Icon": "imgs/actions/fields/icon",
+			"Tooltip": "1Password: choose what click, double click and hold do with any field of an item.",
+			"PropertyInspectorPath": "ui/onepassword-fields.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/fields/key",
 					"TitleAlignment": "middle"
 				}
 			]

@@ -2,7 +2,9 @@
 
 An [Elgato Stream Deck](https://www.elgato.com/stream-deck) plugin that integrates with [1Password](https://1password.com/) so you can trigger vault actions from your deck.
 
-## Action: 1Password item
+The plugin has two actions: **Login** with fixed gestures for login items, and **1Password**, where you choose what each gesture does with any field of an item.
+
+## Action: Login
 
 Configure a key with a vault and an item from the property inspector, then:
 
@@ -14,6 +16,18 @@ Configure a key with a vault and an item from the property inspector, then:
 
 A green check confirms success; a warning triangle means the gesture failed (no account configured, authorization declined, no item selected, missing field, SDK error) — see the plugin logs for details.
 
+## Action: 1Password
+
+Configure a key with a vault and an item, then pick a target for each of the three gestures — **Click**, **Double click** (within 300 ms) and **Hold** (≥ 500 ms):
+
+| Target | Effect |
+| --- | --- |
+| Do nothing | The gesture is ignored (default for a new key) |
+| Open website | Open the item's first website in the default browser; the clipboard is left alone. Listed only when the item has a website |
+| Any field of the item | Copy the field's current value to the clipboard. For a one-time password this is the current code |
+
+The field lists are built from the selected item and show every field under its title, custom fields included; when two fields share a title, the section name is added (`Bank → PIN`). Concealed fields (passwords, PINs, API keys) and one-time passwords are cleared from the clipboard after 30 s if still there; other fields stay. Choosing another item refreshes the lists and resets any gesture whose field the new item does not have. A gesture whose field has since disappeared from the item, or is empty, shows the warning triangle.
+
 ## Prerequisites
 
 - macOS 12+ or Windows 10+ with Stream Deck software 7.1+ (clipboard goes through `pbcopy`/`pbpaste` on macOS and Windows PowerShell `Set-Clipboard`/`Get-Clipboard` on Windows)
@@ -24,8 +38,8 @@ A green check confirms success; a warning triangle means the gesture failed (no 
 
 1. In the 1Password app, select your account at the top of the sidebar, then open **Settings → Developer** and turn on **Integrate with other apps** (on Windows the checkbox is labelled **Integrate with 1Password SDKs**). Without it the plugin reports `Native library is not available.`, because 1Password only publishes the integration library and its IPC channel once the setting is on.
 2. Optionally turn on Touch ID (macOS) or Windows Hello under **Settings → Security** so authorization prompts can be approved biometrically.
-3. Add a **1Password item** key to your deck. Until an account is configured, its property inspector shows only the **1Password account** field with a one-line reminder of step 1. Enter the email address you sign in with (or the account name exactly as shown at the top of the app's sidebar).
-4. Approve the authorization prompt that opens in the 1Password app. The **Vault**, **Item** and **Hold action** settings appear and the vault list loads; pick a vault and an item.
+3. Add a **Login** or **1Password** key to your deck. Until an account is configured, its property inspector shows only the **1Password account** field with a one-line reminder of step 1. Enter the email address you sign in with (or the account name exactly as shown at the top of the app's sidebar).
+4. Approve the authorization prompt that opens in the 1Password app. The vault and item settings appear (with **Hold action** on a Login key, the three gesture lists on a 1Password key) and the vault list loads; pick a vault and an item.
 
 The account is stored once in the plugin's global settings and shared by every 1Password key, so further keys open straight on the vault and item settings. The account stays reachable in the collapsed **1Password account** section at the top of each key's property inspector; changing it there switches all keys to the new account. If 1Password rejects the account (for example a typo in the email), the error is shown under the field.
 
@@ -36,7 +50,7 @@ The session expires after 10 minutes of inactivity or when you lock 1Password, i
 ```bash
 npm install
 npm run build      # bundles to io.nerd4rent.streamdeck-1password-plugin.sdPlugin/bin/plugin.js
-npm test           # gesture detector unit tests
+npm test           # gesture detector, gesture target and clipboard unit tests
 npm run watch      # rebuild and restart the plugin on every change
 ```
 
