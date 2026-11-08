@@ -61,7 +61,7 @@ public static class StreamDeckKeyboard {
 }
 '`;
 
-const MAC_ACCESSIBILITY_CHECK = `ObjC.import('ApplicationServices');
+const MAC_SCRIPT_PRELUDE = `ObjC.import('ApplicationServices');
 ObjC.import('Foundation');
 const HID_EVENT_TAP = 0;
 function postKey(keyCode, flags, prepare) {
@@ -82,7 +82,7 @@ function run() {
 	return '';
 }`;
 
-const MAC_TYPE = `${MAC_ACCESSIBILITY_CHECK}
+const MAC_TYPE = `${MAC_SCRIPT_PRELUDE}
 function send() {
 	const data = $.NSFileHandle.fileHandleWithStandardInput.readDataToEndOfFile;
 	const input = $.NSString.alloc.initWithDataEncoding(data, $.NSUTF8StringEncoding).js;
@@ -94,7 +94,7 @@ function send() {
 	}
 }`;
 
-const MAC_PASTE = `${MAC_ACCESSIBILITY_CHECK}
+const MAC_PASTE = `${MAC_SCRIPT_PRELUDE}
 const KEY_V = 9;
 const COMMAND_FLAG = 0x100000;
 function send() {
