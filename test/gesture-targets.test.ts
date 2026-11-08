@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { fieldOptions, isSecretField, resolveGestureTarget, sshKeyFields, type ItemInfo } from "../src/gesture-targets.ts";
+import { fieldOptions, isSecretField, resolveGestureOutput, resolveGestureTarget, sshKeyFields, type ItemInfo } from "../src/gesture-targets.ts";
 
 const item: ItemInfo = {
 	fields: [
@@ -120,5 +120,22 @@ describe("sshKeyFields", () => {
 		};
 
 		assert.deepEqual(resolveGestureTarget("field:private_key.publicKey", sshItem), { kind: "copy", value: "ssh-ed25519 AAAA", secret: false });
+	});
+});
+
+describe("resolveGestureOutput", () => {
+	it("copies when the gesture has no output setting yet", () => {
+		assert.equal(resolveGestureOutput(undefined), "copy");
+		assert.equal(resolveGestureOutput(""), "copy");
+	});
+
+	it("keeps each known output mode", () => {
+		for (const mode of ["copy", "paste", "type"] as const) {
+			assert.equal(resolveGestureOutput(mode), mode);
+		}
+	});
+
+	it("falls back to copy for an unknown value", () => {
+		assert.equal(resolveGestureOutput("autofill"), "copy");
 	});
 });

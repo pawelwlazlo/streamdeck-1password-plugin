@@ -55,7 +55,7 @@ export function createClipboard(platform: NodeJS.Platform, run: CommandRunner = 
 	};
 }
 
-function runCommand(command: string, args: string[], input: string): Promise<string> {
+export function runCommand(command: string, args: string[], input: string): Promise<string> {
 	return new Promise((resolve, reject) => {
 		const child = spawn(command, args, { windowsHide: true });
 		let stdout = "";

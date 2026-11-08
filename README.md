@@ -28,9 +28,25 @@ Configure a key with a vault and an item, then pick a target for each of the thr
 
 The field lists are built from the selected item and show every field under its title, custom fields included; when two fields share a title, the section name is added (`Bank → PIN`). Concealed fields (passwords, PINs, API keys) and one-time passwords are cleared from the clipboard after 30 s if still there; other fields stay. Choosing another item refreshes the lists and resets any gesture whose field the new item does not have. A gesture whose field has since disappeared from the item, or is empty, shows the warning triangle.
 
+### Output modes
+
+A gesture that targets a field gets an **Output** setting right under it:
+
+| Output | Effect |
+| --- | --- |
+| Copy | Copy the value to the clipboard (default, also for keys configured before output modes existed) |
+| Paste | Copy the value, then press Cmd+V (macOS) or Ctrl+V (Windows) in the active window. The clipboard is cleared afterwards by the same rule as Copy: concealed fields and one-time passwords after 30 s, other fields never |
+| Type | Type the value character by character into the active window, without touching the clipboard |
+
+Paste and Type go to whichever window has the focus when the gesture fires; pressing a Stream Deck key does not change the focus, and the plugin never switches windows. Type sends every character as a Unicode key event, so it does not depend on the keyboard layout and handles characters such as `+^%~{}()`, Polish diacritics and emoji. Characters are sent 10 ms apart. The value is passed to the helper process on standard input, never on its command line, and is never logged.
+
+**macOS:** Paste and Type need the **Accessibility** permission for the Stream Deck app: System Settings → Privacy & Security → Accessibility, turn on **Stream Deck** (add it with `+` if it is not listed), then quit and reopen Stream Deck. Without it the key shows the warning triangle and the plugin log says `Stream Deck needs the Accessibility permission to paste and type`; nothing is pasted or typed. Keystrokes are sent with `osascript` (JavaScript for Automation) and Quartz keyboard events.
+
+**Windows:** Paste and Type use the Win32 `SendInput` function through Windows PowerShell; no extra permission is needed. Windows does not let a normal process send keystrokes to a window running as administrator, and it drops them silently, so Paste and Type do nothing in elevated windows. Endpoint protection software may also block PowerShell from sending input. Each gesture starts PowerShell, so Paste and Type take about half a second to a second to start.
+
 ## Prerequisites
 
-- macOS 12+ or Windows 10+ with Stream Deck software 7.1+ (clipboard goes through `pbcopy`/`pbpaste` on macOS and Windows PowerShell `Set-Clipboard`/`Get-Clipboard` on Windows)
+- macOS 12+ or Windows 10+ with Stream Deck software 7.1+ (clipboard goes through `pbcopy`/`pbpaste` on macOS and Windows PowerShell `Set-Clipboard`/`Get-Clipboard` on Windows; Paste and Type need the Accessibility permission on macOS, see [Output modes](#output-modes))
 - Node.js 20+ for building
 - The **latest 1Password desktop app** (1Password 8), signed in to your account. The plugin authenticates through the app with the 1Password SDK, so there are no tokens to create or paste, and every vault you can see in the app is available — including your Private vault.
 
@@ -50,7 +66,7 @@ The session expires after 10 minutes of inactivity or when you lock 1Password, i
 ```bash
 npm install
 npm run build      # bundles to io.nerd4rent.streamdeck-1password-plugin.sdPlugin/bin/plugin.js
-npm test           # gesture detector, gesture target and clipboard unit tests
+npm test           # gesture detector, gesture target, clipboard and keyboard unit tests
 npm run watch      # rebuild and restart the plugin on every change
 ```
 
