@@ -28,7 +28,7 @@ export const NO_ACTION = "";
 export const OPEN_WEBSITE = "open-website";
 const FIELD_PREFIX = "field:";
 
-const SECRET_FIELD_TYPES = new Set(["Concealed", "Totp"]);
+const SECRET_FIELD_TYPES = new Set(["Concealed", "Totp", "SshKey"]);
 
 export type SshKeyAttributes = {
 	publicKey: string;

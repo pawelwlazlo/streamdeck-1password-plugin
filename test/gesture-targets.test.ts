@@ -17,9 +17,10 @@ const item: ItemInfo = {
 };
 
 describe("isSecretField", () => {
-	it("treats concealed and TOTP fields as secrets", () => {
+	it("treats concealed, TOTP and SSH private key fields as secrets", () => {
 		assert.equal(isSecretField("Concealed"), true);
 		assert.equal(isSecretField("Totp"), true);
+		assert.equal(isSecretField("SshKey"), true);
 	});
 
 	it("treats every other field type as plain", () => {
@@ -81,6 +82,19 @@ describe("resolveGestureTarget", () => {
 
 	it("copies the current OTP code as a secret", () => {
 		assert.deepEqual(resolveGestureTarget("field:otp", item), { kind: "copy", value: "123456", secret: true });
+	});
+
+	it("copies an SSH private key as a secret and its public attributes as plain", () => {
+		const privateKey = { id: "private_key", title: "private key", fieldType: "SshKey", value: "-----BEGIN OPENSSH PRIVATE KEY-----" };
+		const sshItem: ItemInfo = {
+			fields: [...sshKeyFields(privateKey, { publicKey: "ssh-ed25519 AAAA", fingerprint: "SHA256:abc", keyType: "Ed25519" }), privateKey],
+			websites: [],
+		};
+
+		assert.equal((resolveGestureTarget("field:private_key", sshItem) as { secret: boolean }).secret, true);
+		for (const id of ["private_key.publicKey", "private_key.fingerprint", "private_key.keyType"]) {
+			assert.equal((resolveGestureTarget(`field:${id}`, sshItem) as { secret: boolean }).secret, false, id);
+		}
 	});
 
 	it("fails for a field the item no longer has", () => {

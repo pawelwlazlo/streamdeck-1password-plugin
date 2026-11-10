@@ -26,7 +26,7 @@ Configure a key with a vault and an item, then pick a target for each of the thr
 | Open website | Open the item's first website in the default browser; the clipboard is left alone. Listed only when the item has a website |
 | Any field of the item | Copy the field's current value to the clipboard. For a one-time password this is the current code |
 
-The field lists are built from the selected item and show every field under its title, custom fields included; when two fields share a title, the section name is added (`Bank → PIN`). Concealed fields (passwords, PINs, API keys) and one-time passwords are cleared from the clipboard after 30 s if still there; other fields stay. Choosing another item refreshes the lists and resets any gesture whose field the new item does not have. A gesture whose field has since disappeared from the item, or is empty, shows the warning triangle.
+The field lists are built from the selected item and show every field under its title, custom fields included; when two fields share a title, the section name is added (`Bank → PIN`). Concealed fields (passwords, PINs, API keys), one-time passwords and SSH private keys are cleared from the clipboard after 30 s if still there; other fields stay. Choosing another item refreshes the lists and resets any gesture whose field the new item does not have. A gesture whose field has since disappeared from the item, or is empty, shows the warning triangle.
 
 ### Output modes
 
